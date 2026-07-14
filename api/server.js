@@ -10,10 +10,16 @@ const PORT = process.env.PORT || 8083;
 
 // DigitalOcean injects DATABASE_URL automatically when you attach a
 // managed Postgres DB to this component in app.yaml.
+function stripSslMode(url) {
+  if (!url) return url;
+  return url.replace(/([?&])sslmode=[^&]*&?/, '$1').replace(/[?&]$/, '');
+}
+
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: stripSslMode(process.env.DATABASE_URL),
   ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false
 });
+
 
 async function ensureTable() {
   await pool.query(`
