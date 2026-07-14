@@ -6,7 +6,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8083;
 
 // DigitalOcean injects DATABASE_URL automatically when you attach a
 // managed Postgres DB to this component in app.yaml.
