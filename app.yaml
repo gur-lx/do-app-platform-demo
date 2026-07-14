@@ -8,7 +8,7 @@ static_sites:
   - name: frontend
     github:
       repo: gur-lx/do-app-platform-demo
-      branch: main
+      branch: master
       deploy_on_push: true
     source_dir: frontend
     routes:
@@ -19,7 +19,7 @@ services:
   - name: api
     github:
       repo: gur-lx/do-app-platform-demo
-      branch: main
+      branch: master
       deploy_on_push: true
     source_dir: api
     dockerfile_path: api/Dockerfile
@@ -28,6 +28,7 @@ services:
     instance_size_slug: apps-s-1vcpu-0.5gb
     routes:
       - path: /api
+        preserve_path_prefix: true
     health_check:
       http_path: /health
     envs:
@@ -40,7 +41,7 @@ workers:
   - name: uptime-worker
     github:
       repo: gur-lx/do-app-platform-demo
-      branch: main
+      branch: master
       deploy_on_push: true
     source_dir: worker
     instance_count: 1
