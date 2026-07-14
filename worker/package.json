@@ -1,0 +1,10 @@
+{
+  "name": "learning-log-worker",
+  "version": "1.0.0",
+  "description": "Background worker that pings the API health endpoint on App Platform",
+  "main": "worker.js",
+  "scripts": {
+    "start": "node worker.js"
+  },
+  "dependencies": {}
+}

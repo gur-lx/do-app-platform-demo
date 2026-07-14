@@ -1,0 +1,59 @@
+name: learning-log
+region: nyc
+
+# --- STATIC SITE ---
+# Served at the root of your app's domain (buildpack-free — App Platform
+# just serves the static files directly, no build step needed).
+static_sites:
+  - name: frontend
+    github:
+      repo: YOUR_GITHUB_USERNAME/do-app-platform-demo
+      branch: main
+      deploy_on_push: true
+    source_dir: frontend
+    routes:
+      - path: /
+
+# --- API (web service, built from Dockerfile) ---
+services:
+  - name: api
+    github:
+      repo: YOUR_GITHUB_USERNAME/do-app-platform-demo
+      branch: main
+      deploy_on_push: true
+    source_dir: api
+    dockerfile_path: api/Dockerfile
+    http_port: 8080
+    instance_count: 1
+    instance_size_slug: apps-s-1vcpu-0.5gb
+    routes:
+      - path: /api
+    health_check:
+      http_path: /health
+    envs:
+      - key: DATABASE_URL
+        scope: RUN_TIME
+        value: ${learning-log-db.DATABASE_URL}
+
+# --- WORKER (no public route, pings the API internally) ---
+workers:
+  - name: uptime-worker
+    github:
+      repo: YOUR_GITHUB_USERNAME/do-app-platform-demo
+      branch: main
+      deploy_on_push: true
+    source_dir: worker
+    instance_count: 1
+    instance_size_slug: apps-s-1vcpu-0.5gb
+    run_command: npm start
+    envs:
+      - key: API_INTERNAL_URL
+        scope: RUN_TIME
+        value: ${api.PRIVATE_URL}
+
+# --- MANAGED DATABASE ---
+databases:
+  - name: learning-log-db
+    engine: PG
+    version: "16"
+    production: false
